@@ -6,6 +6,7 @@
 <div id="loader">
     <div class="spinner"></div>
 </div>
+
     @include('backend::modules.sidebar')
     @include('backend::modules.header')
 

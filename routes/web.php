@@ -22,8 +22,3 @@ Route::get('/password/reset', function(){
     return redirect('/login');
 })->name('password.request');
 
-
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
