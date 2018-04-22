@@ -1,12 +1,10 @@
 @extends('layouts.app')
-
 @section('content')
-    <div id="app">
         <main class="py-4" >
             <div class="container">
                 <div class="row justify-content-center" style="margin-top: 200px;">
                     <div class="col-md-8">
-                        <div class="card">
+                        <div class="card" style="background-color: #ffffff47; width: 500px; margin-left: 50px;">
                             <div class="card-header">{{ __('Login') }}</div>
                             <div class="card-body" >
                                 <form method="POST" action="{{ route('login') }}">
@@ -73,11 +71,10 @@
                 </div>
             </div>
         </main>
-    </div>
 @endsection
 @push('tail')
-    <script src="{{ asset('js/app.js') }}"></script>
-    <script src="{{ asset('js/jquery.tubular.1.0.js') }}"></script>
+    <script src="js/app.js"></script>
+    <script src="js/jquery.tubular.1.0.js"></script>
     <script>
         $(function () {
             $('#app').tubular({videoId: 'rVVv5kUoxME'}); // where idOfYourVideo is the YouTube ID. });

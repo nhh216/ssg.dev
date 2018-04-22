@@ -69,4 +69,10 @@ class BackendController extends Controller
     public function destroy()
     {
     }
+
+
+    public  function  showDashboard()
+    {
+        return view("backend::index");
+    }
 }

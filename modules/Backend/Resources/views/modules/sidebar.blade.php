@@ -67,13 +67,20 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="sidebar-link" href="charts.html">
+                <a class="dropdown-item" href="{{ route('logout') }}"
+                   onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+
               <span class="icon-holder">
                 <i class="c-indigo-500 ti-bar-chart"></i>
               </span>
                     <span class="title">Charts</span>
                 </a>
             </li>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
         </ul>
     </div>
 </div>
