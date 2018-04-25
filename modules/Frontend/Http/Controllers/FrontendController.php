@@ -14,8 +14,7 @@ class FrontendController extends Controller
      */
     public function index()
     {
-        return "ádfadsf";
-//        return view('frontend::index');
+        return view('frontend::layouts.master');
     }
 
     /**

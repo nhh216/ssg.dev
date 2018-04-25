@@ -12,6 +12,7 @@ use App\AllProducts;
 use App\Http\Controllers\Controller;
 use App\Manufacture;
 use App\Product;
+use App\Shop;
 use function simplehtmldom_1_5\file_get_html;
 use Sunra\PhpSimple\HtmlDomParser;
 use GuzzleHttp\Client;
@@ -57,23 +58,24 @@ class DomController extends Controller
         if ($match && isset($match[1])) {
             $data = json_decode($match[1], true);
             for ($i = 0; $i < sizeof($data['mods']['listItems']); $i++) {
-                $product = new AllProducts();
-
-                $product_name = $data['mods']['listItems'][$i]['name'];
-                $product->name = $product_name;
-                $product_url = $data['mods']['listItems'][$i]['productUrl'];
-                $product->url = $product_url;
-                $product_image = $data['mods']['listItems'][$i]['image'];
-                $product->image = $product_image;
-                $product_price = $data['mods']['listItems'][$i]['price'];
-                $product->price = $product_price;
-                $product_manu_name = $data['mods']['listItems'][$i]['brandName'];
-                $manu_id = Manufacture::select('id')->where('name', $product_manu_name)->get();
-                $product->manu_id = $manu_id[0]->id;
+//                $product = new AllProducts();
+                   $shop = new Shop();
+//                $product_name = $data['mods']['listItems'][$i]['name'];
+//                $product->name = $product_name;
+//                $product_url = $data['mods']['listItems'][$i]['productUrl'];
+//                $product->url = $product_url;
+//                $product_image = $data['mods']['listItems'][$i]['image'];
+//                $product->image = $product_image;
+//                $product_price = $data['mods']['listItems'][$i]['price'];
+//                $product->price = $product_price;
+//                $product_manu_name = $data['mods']['listItems'][$i]['brandName'];
+//                $manu_id = Manufacture::select('id')->where('name', $product_manu_name)->get();
+//                $product->manu_id = $manu_id[0]->id;
                 $product_shop_name = $data['mods']['listItems'][$i]['sellerName'];
-                $product->shop_name = $product_shop_name;
+//                $product->shop_name = $product_shop_name;
+//                 $shop->
 //                print_r($data['mods']['listItems'][$i]['description']);
-                $product->save();
+//                $product->save();
 
 //             echo       $manu_id = Manufacture::select('id')->where('name',$product_manu_name)->get() . '<br>';
 //                echo '<br>';
