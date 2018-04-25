@@ -59,21 +59,21 @@ class DomController extends Controller
             for ($i = 0; $i < sizeof($data['mods']['listItems']); $i++) {
                 $product = new AllProducts();
 
-                 $product_name = $data['mods']['listItems'][$i]['name'];
-                     $product->name = $product_name;
-                 $product_url = $data['mods']['listItems'][$i]['productUrl'];
-                     $product->url = $product_url;
-                 $product_image = $data['mods']['listItems'][$i]['image'];
-                     $product->image =   $product_image;
-                 $product_price = $data['mods']['listItems'][$i]['price'];
-                     $product->price =   $product_price;
-                 $product_manu_name = $data['mods']['listItems'][$i]['brandName'];
-                 $manu_id = Manufacture::select('id')->where('name',$product_manu_name)->get();
-                     $product->manu_id = $manu_id[0]->id;
-                 $product_shop_name = $data['mods']['listItems'][$i]['sellerName'];
-                     $product->shop_name =   $product_shop_name;
+                $product_name = $data['mods']['listItems'][$i]['name'];
+                $product->name = $product_name;
+                $product_url = $data['mods']['listItems'][$i]['productUrl'];
+                $product->url = $product_url;
+                $product_image = $data['mods']['listItems'][$i]['image'];
+                $product->image = $product_image;
+                $product_price = $data['mods']['listItems'][$i]['price'];
+                $product->price = $product_price;
+                $product_manu_name = $data['mods']['listItems'][$i]['brandName'];
+                $manu_id = Manufacture::select('id')->where('name', $product_manu_name)->get();
+                $product->manu_id = $manu_id[0]->id;
+                $product_shop_name = $data['mods']['listItems'][$i]['sellerName'];
+                $product->shop_name = $product_shop_name;
 //                print_r($data['mods']['listItems'][$i]['description']);
-                     $product->save();
+                $product->save();
 
 //             echo       $manu_id = Manufacture::select('id')->where('name',$product_manu_name)->get() . '<br>';
 //                echo '<br>';
