@@ -50,7 +50,7 @@ class ManufactureSeeder extends Seeder
             ],
             [
                 'id'=>'10',
-                'name'=>'Mobistar'
+                'name'=>'Mobiistar'
             ],
             [
                 'id'=>'11',

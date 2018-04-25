@@ -4,7 +4,7 @@
             <div class="container">
                 <div class="row justify-content-center" style="margin-top: 200px;">
                     <div class="col-md-8">
-                        <div class="card" style="background-color: #ffffff47; width: 500px; margin-left: 50px;">
+                        <div class="card" style="background-color: #ffffff47; width: 500px; margin-left: 120px;">
                             <div class="card-header">{{ __('Login') }}</div>
                             <div class="card-body" >
                                 <form method="POST" action="{{ route('login') }}">

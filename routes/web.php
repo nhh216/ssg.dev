@@ -22,3 +22,4 @@ Route::get('/password/reset', function(){
     return redirect('/login');
 })->name('password.request');
 
+Route::get('/dom','DomController@getDataLazada');

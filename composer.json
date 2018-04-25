@@ -10,14 +10,17 @@
         "laravel/framework": "5.6.*",
         "laravel/passport": "^6.0",
         "laravel/tinker": "^1.0",
-        "nwidart/laravel-modules": "^3.1"
+        "nwidart/laravel-modules": "^3.1",
+        "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "filp/whoops": "^2.0",
         "fzaninotto/faker": "^1.4",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^2.0",
-        "phpunit/phpunit": "^7.0"
+        "phpunit/phpunit": "^7.0",
+        "symfony/thanks": "^1.0",
+        "sunra/php-simple-html-dom-parser": "v1.5.2"
     },
     "autoload": {
         "classmap": [

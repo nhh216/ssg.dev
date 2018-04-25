@@ -8,4 +8,9 @@ class Manufacture extends Model
 {
     //
     protected $table = 'manufactures';
+
+    public  function all_products()
+    {
+        return $this->hasMany('App\AllProducts');
+    }
 }

@@ -24,6 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
+        $schedule->command('CrawlerData:command')
+            ->everyMinute()->sendOutputTo('storage/log.txt');
+
         // $schedule->command('inspire')
         //          ->hourly();
     }
