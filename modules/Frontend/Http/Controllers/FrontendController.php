@@ -60,6 +60,7 @@ class FrontendController extends Controller
      */
     public function update(Request $request)
     {
+
     }
 
     /**
@@ -68,5 +69,14 @@ class FrontendController extends Controller
      */
     public function destroy()
     {
+
+    }
+    /**
+     * Remove the specified resource from storage.
+     * @return Response
+     */
+    public  function showListProducts()
+    {
+        return view('frontend::pages.dien_thoai');
     }
 }

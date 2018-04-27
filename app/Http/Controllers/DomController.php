@@ -74,7 +74,7 @@ class DomController extends Controller
                 $product_shop_name = $data['mods']['listItems'][$i]['sellerName'];
 //                $product->shop_name = $product_shop_name;
 //                 $shop->
-//                print_r($data['mods']['listItems'][$i]['description']);
+//                print_r( $data['mods']['listItems'][$i]['description']);
 //                $product->save();
 
 //             echo       $manu_id = Manufacture::select('id')->where('name',$product_manu_name)->get() . '<br>';
