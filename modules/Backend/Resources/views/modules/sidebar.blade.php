@@ -1,3 +1,7 @@
+
+<div id="loader">
+    <div class="spinner"></div>
+</div>
 <div class="sidebar">
     <div class="sidebar-inner">
         <div class="sidebar-logo">
@@ -51,11 +55,11 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="sidebar-link" href="calendar.html">
+                <a class="sidebar-link" href="{{route('siteconfig')}}">
               <span class="icon-holder">
                 <i class="c-deep-orange-500 ti-calendar"></i>
               </span>
-                    <span class="title">Calendar</span>
+                    <span class="title">Cấu Hình</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -67,10 +71,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="dropdown-item" href="{{ route('logout') }}"
-                   onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-
+                <a class="dropdown-item" href="/logout">
               <span class="icon-holder">
                 <i class="c-indigo-500 ti-bar-chart"></i>
               </span>
@@ -78,9 +79,6 @@
                 </a>
             </li>
 
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
         </ul>
     </div>
 </div>

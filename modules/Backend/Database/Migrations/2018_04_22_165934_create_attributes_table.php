@@ -17,6 +17,7 @@ class CreateAttributesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('type')->nullable();
+            $table->string('product_id')->nullable();
             $table->timestamps();
         });
     }

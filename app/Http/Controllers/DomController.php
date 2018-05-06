@@ -19,7 +19,19 @@ use GuzzleHttp\Client;
 
 class DomController extends Controller
 {
+    public function domHtml()
+    {
+//        $urlTiki = 'https://tiki.vn/dien-thoai-smartphone/c1795?order=price%2Casc';
+//        $urlLazada = 'https://www.lazada.vn/dien-thoai-di-dong/apple--oppo--mobiistar--samsung--xiaomi--nokia--huawei/?page=1';
+        $urlLotte = 'https://els.lotte.vn/api/v1/categories/687/products';
+//        $urlAdayroi  = 'https://www.adayroi.com/dien-thoai-di-dong-c323?q=%3Arelevance&page=';
 
+//        $this->getPriceLazada($urlLazada);
+//        $this->getDataTiki($urlTiki);
+        $this->getDataLotte($urlLotte);
+//        $this->getPriceAdayroi($urlAdayroi);
+//        $this->Fpt();
+    }
     public function getPriceLazada($url)
     {
         $data = [];
@@ -58,31 +70,31 @@ class DomController extends Controller
         if ($match && isset($match[1])) {
             $data = json_decode($match[1], true);
             for ($i = 0; $i < sizeof($data['mods']['listItems']); $i++) {
-//                $product = new AllProducts();
-                   $shop = new Shop();
-//                $product_name = $data['mods']['listItems'][$i]['name'];
-//                $product->name = $product_name;
-//                $product_url = $data['mods']['listItems'][$i]['productUrl'];
-//                $product->url = $product_url;
-//                $product_image = $data['mods']['listItems'][$i]['image'];
-//                $product->image = $product_image;
-//                $product_price = $data['mods']['listItems'][$i]['price'];
-//                $product->price = $product_price;
-//                $product_manu_name = $data['mods']['listItems'][$i]['brandName'];
-//                $manu_id = Manufacture::select('id')->where('name', $product_manu_name)->get();
-//                $product->manu_id = $manu_id[0]->id;
+                $product = new AllProducts();
+//                $shop = new Shop();
+                $product_name = $data['mods']['listItems'][$i]['name'];
+                $product->name = $product_name;
+                $product_url = $data['mods']['listItems'][$i]['productUrl'];
+                $product->url = $product_url;
+                $product_image = $data['mods']['listItems'][$i]['image'];
+                $product->image = $product_image;
+                $product_price = $data['mods']['listItems'][$i]['price'];
+                $product->price = $product_price;
+                $product_manu_name = $data['mods']['listItems'][$i]['brandName'];
+                $manu_id = Manufacture::select('id')->where('name', $product_manu_name)->get();
+//                dd($manu_id);
+                $product->manu_id = $manu_id[0]->id;
                 $product_shop_name = $data['mods']['listItems'][$i]['sellerName'];
-//                $product->shop_name = $product_shop_name;
+                $product->shop_name = $product_shop_name;
+                $product->site_id = 1;
 //                 $shop->
 //                print_r( $data['mods']['listItems'][$i]['description']);
-//                $product->save();
+                $product->save();
 
 //             echo       $manu_id = Manufacture::select('id')->where('name',$product_manu_name)->get() . '<br>';
 //                echo '<br>';
             }
         }
-
-
         $nextPage = [];
         if (isset($match2[0])) {
             $nextPage = preg_split('/"/', $match2[0]);
@@ -92,11 +104,300 @@ class DomController extends Controller
             echo "Done ------->";
         }
     }
-
-    public function getDataLazada()
+    public function getDataTiki($url)
     {
-        $url = 'https://www.lazada.vn/dien-thoai-di-dong/apple--oppo--mobiistar--samsung--xiaomi--nokia--huawei/?page=1';
-        $this->getPriceLazada($url);
+        $client = new Client();
+        $header = [
+            'Accept-Encoding' => 'gzip, deflate, br',
+            'Accept-Language' => 'vi-VN,vi;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,en;q=0.5',
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) coc_coc_browser/68.4.154 Chrome/62.4.3202.154 Safari/537.36',
+            'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        ];
+        $reponse2 = $client->request('GET', $url, ['headers' => $header]); // Check lại chỗ này
+        $respon = $reponse2->getBody()->getContents();
+        $partOfContent = preg_split('<!--  BEGIN GOOGLE TAGMANAGER -->', $respon);
+        file_put_contents(storage_path('html/tiki-head.html'), $partOfContent[0]);
+        $partOfContentBody = [];
+        $partOfContentBody = preg_split('</nav>', $partOfContent[1]);
+        file_put_contents(storage_path('html/tiki-body.html'), $partOfContentBody[1]);
+        $html = HtmlDomParser::file_get_html(storage_path('html/tiki-head.html'));
+        $htmlBody = HtmlDomParser::file_get_html(storage_path('html/tiki-body.html'));
+        $str = $html->find('link[rel=\'next\']');
+        $listProduct = $htmlBody->find('div[class="product-item"]');
+        $price = 'data-price';
+        $title = 'data-title';
+        $price = 'data-price';
+        $brand = 'data-brand';
+        foreach ($listProduct as $listPr) {
+            echo $listPr->children[0]->href . '<br>';
+            if (isset($listPr->children(0)->children(0)->children(0)->src)) {
+                echo $img = ($listPr->children(0)->children(0)->children(0))->src . '<br>';
+            }
+            echo $listPr->$title . '<br>';
+            echo $listPr->$price . '<br>';
+            echo $listPr->$brand . '<br>';
+        }
+        if (isset($str)) {
+            if (isset($str['0'])) {
+                echo $newUrl = $str['0']->attr['href'] . '<br>';
+                $this->getDataTiki($newUrl);
+            }
+        }
+    }
+    public function getDataLotte($url)
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "{\"params\":{\"page\":0,\"hitsPerPage\":3000,\"facets\":[\"categories\",\"product_brand\",\"color\",\"size\",\"vendor\",\"product_brand_id\",\"vendor_id\"]}}",
+            CURLOPT_HTTPHEADER => array(
+                "Cache-Control: no-cache",
+                "Content-Type: application/json",
+                "Postman-Token: d64f9340-e3f6-438c-ba42-b3dc558db4d8"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $obj = json_decode($response, true);
+        $data = array($obj);
+        for ($i = 0; $i < count($data[0]['hits']); $i++) {
+            $product = new AllProducts();
+            $product_name = $data[0]['hits'][$i]['name'];
+            $product->name = $product_name;
+            $product_url = $data[0]['hits'][$i]['url'];
+            $product->url = $product_url;
+            $product_image = $data[0]['hits'][$i]['image_url'];
+            $product->image = $product_image;
+            $product_price = $data[0]['hits'][$i]['price_default'];
+            $product->price = $product_price;
+            $product->site_id = 4;
+            $product_manu_name = $data[0]['hits'][$i]['product_brand'];
+            $manu_id = Manufacture::select('id')->where('name', $product_manu_name)->get();
+            if(isset( $manu_id[0]))
+            {
+                $product->manu_id = $manu_id[0]->id;
+            }
+            else {
+                $product->manu_id = 0;
+            }
+            $product_shop_name = 'Lotte Mall';
+            $product->shop_name = $product_shop_name;
+            $product->save();
+
+//            echo ($data[0]['hits'][$i]['name']) . '<br>';
+//            echo ($data[0]['hits'][$i]['image_url']) . '<br>';
+//            echo ($data[0]['hits'][$i]['url']) . '<br>';
+//            echo ($data[0]['hits'][$i]['product_brand']) . '<br>';
+//            echo ($data[0]['hits'][$i]['price_default']) . '<br>';
+        }
+
+    }
+    public function getPriceAdayroi($url)
+    {
+
+        $html = HtmlDomParser::file_get_html($url);
+        $dom = $html->find('nav.navigation');
+        $lastPage = $dom[3]->children[0]->lastChild()->children[0]->attr['href'];
+        $lastIndex = preg_split('~page=~',$lastPage);
+        echo $lastIndex[1];
+        for($i=0; $i< $lastIndex[1] ; $i++)
+        {
+            $url = 'https://www.adayroi.com/dien-thoai-di-dong-c323?q=%3Arelevance&page=' . $i;
+            $html = HtmlDomParser::file_get_html($url);
+            $dom = $html->find('div.product-item__container');
+            foreach ($dom as $data)
+            {
+                echo $data->children[1]->children[0]->plaintext . '<br>';
+                echo $data->children[1]->children[1]->children[0]->plaintext . '<br>';
+                echo $data->children[0]->children[0]->attr['data-src']. '<br>';
+                echo $data->children[0]->attr['href'] . '<br>';
+            }
+        }
+
+    }
+    public  function Fpt()
+    {
+
+        $url = 'https://fptshop.com.vn/dien-thoai?sort=gia-thap-den-cao&trang=2';
+        $html = HtmlDomParser::file_get_html($url);
+        $domLastPage = $html->find('div.f-cmtpaging');
+        $lastPage = $domLastPage[0]->children[2]->attr['data-page'];
+        $i=1;
+        while ($i < $lastPage-2)
+        {
+            $url = 'https://fptshop.com.vn/dien-thoai?sort=gia-cao-den-thap&trang='.$i;
+            $html = HtmlDomParser::file_get_html($url);
+            $dom = $html->find('div.fs-lpil-if');
+            $baseUrl = 'https://fptshop.com.vn';
+            foreach ($dom as $data)
+            {
+                $product = new Product();
+                echo $name = $data->children[0]->children[0]->plaintext . '<br>'; // name
+                $find   = 'iphone';
+                switch ($find){
+                    case "iphone":
+                        $pos = strpos($name, "iphone" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Apple')->get();
+                        }
+                        break;
+                    case "samsung":
+                        $pos = strpos($name, "samsung" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','SamSung')->get();
+                        }
+                        break;
+                    case "Xperia":
+                        $pos = strpos($name, "Xperia" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Sony')->get();
+                        }
+                        break;
+                    case "Oppo":
+                        $pos = strpos($name, "Oppo" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Oppo')->get();
+                        }
+                        break;
+                    case "HTC":
+                        $pos = strpos($name, "HTC");
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','HTC')->get();
+                        }
+                        break;
+                    case "Huawei":
+                        $pos = strpos($name, "Huawei");
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Huawei')->get();
+                        }
+                        break;
+                    case "Vivo":
+                        $pos = strpos($name,"Vivo" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Vivo')->get();
+                        }
+                        break;
+                    case "Motorola":
+                        $pos = strpos($name,"Motorola" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Motorola')->get();
+                        }
+                        break;
+                    case "Philips":
+                        $pos = strpos($name,"Philips" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Philips')->get();
+                        }
+                        break;
+                    case "Mobiistar":
+                        $pos = strpos($name,"Mobiistar" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Mobiistar')->get();
+                        }
+                        break;
+                    case "Nokia":
+                        $pos = strpos($name,"Nokia" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Nokia')->get();
+                        }
+                        break;
+                    case "Asus":
+                        $pos = strpos($name,"Asus" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Asus')->get();
+                        }
+                        break;
+                    case "Xiaomi":
+                        $pos = strpos($name, "Xiaomi");
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Xiaomi')->get();
+                        }
+                        break;
+                    case "Masstel":
+                        $pos = strpos($name, "Masstel" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Masstel')->get();
+                        }
+                        break;
+                    case "Mobell":
+                        $pos = strpos($name,"Mobell" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Mobell')->get();
+                        }
+                        break;
+                    case "BlackBerry":
+                        $pos = strpos($name,  "BlackBerry");
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','BlackBerry')->get();
+                        }
+                        break;
+                    case "Itel":
+                        $pos = strpos($name,"Itel" );
+                        if ($pos !== false) {
+                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Itel')->get();
+                        }
+                        break;
+                }
+
+
+//                echo $baseUrl . $data->children[0]->children[0]->children[0]->attr['href'] . '<br>'; // Url
+//                if(isset($data->children[1]->children[0]->children[0]->children[0]))
+//                {
+//                    echo $data->children[1]->children[0]->children[0]->children[0]->plaintext . '<br>'; // Màn Hình
+//                }
+//                if(isset($data->children[1]->children[0]->children[0]->children[1]))
+//                {
+//                    echo $data->children[1]->children[0]->children[0]->children[1]->plaintext . '<br>'; // Kích thước màn hình
+//                }
+//                if(isset($data->children[1]->children[0]->children[1]->children[0]))
+//                {
+//                    echo $data->children[1]->children[0]->children[1]->children[0]->plaintext . '<br>'; // Camera
+//                }
+//                if(isset($data->children[1]->children[0]->children[1]->children[1]))
+//                {
+//                    echo $data->children[1]->children[0]->children[1]->children[1]->plaintext . '<br>'; // Độ phân giải camera
+//                }
+//                if(isset($data->children[1]->children[0]->children[2]->children[0]))
+//                {
+//                    echo $data->children[1]->children[0]->children[2]->children[0]->plaintext . '<br>'; // Pin
+//                }
+//                if(isset($data->children[1]->children[0]->children[2]->children[1]))
+//                {
+//                    echo $data->children[1]->children[0]->children[2]->children[1]->plaintext . '<br>'; // Dung Lượng Pin
+//                }
+//                if(isset($data->children[1]->children[0]->children[3]->children[0]))
+//                {
+//                    echo $data->children[1]->children[0]->children[3]->children[0]->plaintext . '<br>'; // Ram:
+//                }
+//                if(isset($data->children[1]->children[0]->children[3]->children[1]))
+//                {
+//                    echo $data->children[1]->children[0]->children[3]->children[1]->plaintext . '<br>'; // Dung Lượng Ram:
+//                }
+//                if(isset($data->children[1]->children[0]->children[4]->children[0]))
+//                {
+//                    echo $data->children[1]->children[0]->children[4]->children[0]->plaintext . '<br>'; // CPU:
+//                }
+//                if(isset($data->children[1]->children[0]->children[4]->children[1]))
+//                {
+//                    echo $data->children[1]->children[0]->children[4]->children[1]->plaintext . '<br>'; // Tốc Độ CPU:
+//                }
+//                if(isset($data->children[1]->children[0]->children[5]->children[0]))
+//                {
+//                    echo $data->children[1]->children[0]->children[5]->children[0]->plaintext . '<br>'; // Hệ Điều Hành:
+//                }
+//                if(isset($data->children[1]->children[0]->children[5]->children[1]))
+//                {
+//                    echo $data->children[1]->children[0]->children[5]->children[1]->plaintext . '<br>'; // Phiên Bản
+//                }
+            }
+//            $i++;
+        }
     }
 
 }

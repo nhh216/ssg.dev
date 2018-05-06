@@ -12,4 +12,8 @@ class AllProducts extends Model
     {
         return $this->belongsTo('App\Manufacture');
     }
+    public  function sites()
+    {
+        return $this->belongsTo('App\Site');
+    }
 }

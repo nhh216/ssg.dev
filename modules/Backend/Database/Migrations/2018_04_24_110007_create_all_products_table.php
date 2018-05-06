@@ -20,6 +20,7 @@ class CreateAllProductsTable extends Migration
             $table->string('image',1000);
             $table->string('price');
             $table->integer('manu_id');
+            $table->integer('site_id');
             $table->string('shop_name');
             $table->timestamps();
         });

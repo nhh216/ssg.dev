@@ -1,3 +1,4 @@
+<div class="contain-fluid">
 <div class="row">
     <div class="col-lg-12 no-padding">
         <div id="header">

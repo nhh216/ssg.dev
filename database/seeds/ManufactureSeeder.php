@@ -68,6 +68,18 @@ class ManufactureSeeder extends Seeder
                 'id'=>'14',
                 'name'=>'Masstel'
             ],
+            [
+                'id'=>'15',
+                'name'=>'Mobell'
+            ],
+            [
+                'id'=>'16',
+                'name'=>'BlackBerry'
+            ],
+            [
+                'id'=>'17',
+                'name'=>'Itel'
+            ],
         ];
 
         foreach($manufactureList as $record) {

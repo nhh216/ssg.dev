@@ -68,6 +68,11 @@ class SiteSeeder extends Seeder
                 'link'=>'https://www.dienthoaididong.com/',
                 'name'=>'Nhật Cường'
             ],
+            [
+                'id'=>'12',
+                'link'=>'https://fptshop.com.vn/',
+                'name'=>'Fpt Shop'
+            ],
         ];
 
 

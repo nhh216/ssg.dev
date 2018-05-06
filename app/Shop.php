@@ -8,4 +8,9 @@ class Shop extends Model
 {
     //
     protected $table = 'shops';
+
+    public  function  sites()
+    {
+        return $this->belongsTo('App\Site');
+    }
 }

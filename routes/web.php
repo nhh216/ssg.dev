@@ -10,16 +10,21 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Auth::routes();
-
-Route::get('/', 'HomeController@index');
-
+Route::get('/',function (){
+   return redirect('/homepage');
+});
 Route::get('/register', function(){
     return redirect('/login');
 })->name('register');
 Route::get('/password/reset', function(){
     return redirect('/login');
 })->name('password.request');
-
-Route::get('/dom','DomController@getDataLazada');
+Route::get('/logout',function (){
+   Auth::logout();
+   return redirect('/login');
+});
+Route::get('/home',function (){
+    return redirect('/backend/dashboard');
+});
+Route::get('/dom','DomController@domHtml');

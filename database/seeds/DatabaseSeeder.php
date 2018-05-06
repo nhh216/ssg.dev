@@ -13,5 +13,6 @@ class DatabaseSeeder extends Seeder
     {
          $this->call(ManufactureSeeder::class);
          $this->call(SiteSeeder::class);
+         $this->call(AttributeSeeder::class);
     }
 }

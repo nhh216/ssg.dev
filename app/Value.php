@@ -8,4 +8,9 @@ class Value extends Model
 {
     //
     protected $table = 'values';
+
+    public  function  attributes()
+    {
+        return $this->belongsTo('App\Attribute');
+    }
 }

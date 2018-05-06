@@ -16,7 +16,7 @@ class CreateValuesTable extends Migration
         Schema::create('values', function (Blueprint $table) {
             $table->increments('id');
             $table->string('value');
-
+            $table->integer('attribute_id');
             $table->timestamps();
         });
     }

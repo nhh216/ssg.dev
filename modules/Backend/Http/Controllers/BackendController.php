@@ -73,6 +73,11 @@ class BackendController extends Controller
 
     public  function  showDashboard()
     {
-        return view("backend::index");
+        return view("backend::pages.dashboard");
+    }
+
+    public  function  siteConfig()
+    {
+        return view("backend::pages.config");
     }
 }
