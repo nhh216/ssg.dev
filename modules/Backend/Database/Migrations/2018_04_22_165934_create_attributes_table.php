@@ -13,11 +13,24 @@ class CreateAttributesTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('attributes');
         Schema::create('attributes', function (Blueprint $table) {
+            /* Thông số cơ bản */
             $table->increments('id');
-            $table->string('name');
-            $table->string('type')->nullable();
-            $table->string('product_id')->nullable();
+            $table->integer('product_id');
+            $table->string('resolution')->nullable();
+            $table->string('behind_cam')->nullable();
+            $table->string('front_cam')->nullable();
+            $table->string('cpu_speed')->nullable();
+            $table->string('cpu_core')->nullable();
+            $table->string('chipset')->nullable();
+            $table->string('ram')->nullable();
+            $table->string('gpu')->nullable();
+            $table->string('rom')->nullable();
+            $table->string('os')->nullable();
+            $table->string('battery')->nullable();
+            $table->string('sim')->nullable();
+            $table->text('des')->nullable();
             $table->timestamps();
         });
     }

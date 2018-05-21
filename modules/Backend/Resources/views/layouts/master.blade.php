@@ -5,11 +5,13 @@
     @stack('top')
 </head>
 <body class="app">
-
+@include('backend::modules.sidebar')
+@include('backend::modules.header')
 
     @yield('content')
 
-
-    @stack('bot')
+@include ('backend::modules.footer')
+@include ('backend::include.script_bot')
+@stack('bot')
 </body>
 </html>

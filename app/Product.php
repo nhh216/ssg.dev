@@ -18,4 +18,14 @@ class Product extends Model
     {
         return $this->hasMany('App\Attribute');
     }
+
+    public  function  manufacture()
+    {
+        return $this->belongsTo('App\Manufacture');
+    }
+
+    public  function site()
+    {
+        return $this-> hasMany('App\Site');
+    }
 }

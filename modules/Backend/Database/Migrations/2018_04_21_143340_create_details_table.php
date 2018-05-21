@@ -16,7 +16,7 @@ class CreateDetailsTable extends Migration
         Schema::create('details', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('product_id');
-            $table->string('price');
+            $table->integer('price');
             $table->string('description');
             $table->string('link');
             $table->integer('shop_id');

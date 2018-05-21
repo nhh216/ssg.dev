@@ -9,12 +9,12 @@ class Attribute extends Model
     //
     protected $table = 'attributes';
 
-    public  function values()
+    public  function value()
     {
         return $this->hasMany('App\Value');
     }
 
-    public  function products()
+    public  function product()
     {
         return $this->belongsTo('App\Product');
     }

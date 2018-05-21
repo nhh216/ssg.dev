@@ -9,10 +9,13 @@
 namespace App\Http\Controllers;
 
 use App\AllProducts;
+use App\Attribute;
 use App\Http\Controllers\Controller;
 use App\Manufacture;
 use App\Product;
 use App\Shop;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use function simplehtmldom_1_5\file_get_html;
 use Sunra\PhpSimple\HtmlDomParser;
 use GuzzleHttp\Client;
@@ -22,30 +25,31 @@ class DomController extends Controller
     public function domHtml()
     {
 //        $urlTiki = 'https://tiki.vn/dien-thoai-smartphone/c1795?order=price%2Casc';
-//        $urlLazada = 'https://www.lazada.vn/dien-thoai-di-dong/apple--oppo--mobiistar--samsung--xiaomi--nokia--huawei/?page=1';
-        $urlLotte = 'https://els.lotte.vn/api/v1/categories/687/products';
+        $urlLazada = 'https://www.lazada.vn/dien-thoai-di-dong/apple--oppo--mobiistar--samsung--xiaomi--nokia--huawei/?page=1';
+//        $urlLotte = 'https://els.lotte.vn/api/v1/categories/687/products';
 //        $urlAdayroi  = 'https://www.adayroi.com/dien-thoai-di-dong-c323?q=%3Arelevance&page=';
-
-//        $this->getPriceLazada($urlLazada);
+//
+        $this->getPriceLazada($urlLazada);
 //        $this->getDataTiki($urlTiki);
-        $this->getDataLotte($urlLotte);
+//        $this->getDataLotte($urlLotte);
 //        $this->getPriceAdayroi($urlAdayroi);
 //        $this->Fpt();
+//        $this->test();
     }
+
     public function getPriceLazada($url)
     {
         $data = [];
         $content = "";
         $head = "";
         $curl = curl_init();
-
+        ini_set('max_execution_time', 3000);
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,
-            CURLOPT_TIMEOUT => 6000,
+            CURLOPT_TIMEOUT => 60,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => array(
@@ -77,20 +81,19 @@ class DomController extends Controller
                 $product_url = $data['mods']['listItems'][$i]['productUrl'];
                 $product->url = $product_url;
                 $product_image = $data['mods']['listItems'][$i]['image'];
-                $product->image = $product_image;
-                $product_price = $data['mods']['listItems'][$i]['price'];
+                $product->thumb = $product_image;
+                $product_price = intval($data['mods']['listItems'][$i]['price']);
                 $product->price = $product_price;
                 $product_manu_name = $data['mods']['listItems'][$i]['brandName'];
                 $manu_id = Manufacture::select('id')->where('name', $product_manu_name)->get();
 //                dd($manu_id);
-                $product->manu_id = $manu_id[0]->id;
+                $product->manufacture_id = $manu_id[0]->id;
                 $product_shop_name = $data['mods']['listItems'][$i]['sellerName'];
                 $product->shop_name = $product_shop_name;
                 $product->site_id = 1;
 //                 $shop->
 //                print_r( $data['mods']['listItems'][$i]['description']);
                 $product->save();
-
 //             echo       $manu_id = Manufacture::select('id')->where('name',$product_manu_name)->get() . '<br>';
 //                echo '<br>';
             }
@@ -98,12 +101,13 @@ class DomController extends Controller
         $nextPage = [];
         if (isset($match2[0])) {
             $nextPage = preg_split('/"/', $match2[0]);
-//            echo $nextPage[3] . '<br>';;
             $this->getPriceLazada($nextPage[3]);
+
         } else {
             echo "Done ------->";
         }
     }
+
     public function getDataTiki($url)
     {
         $client = new Client();
@@ -144,6 +148,7 @@ class DomController extends Controller
             }
         }
     }
+
     public function getDataLotte($url)
     {
         $curl = curl_init();
@@ -179,225 +184,253 @@ class DomController extends Controller
             $product->site_id = 4;
             $product_manu_name = $data[0]['hits'][$i]['product_brand'];
             $manu_id = Manufacture::select('id')->where('name', $product_manu_name)->get();
-            if(isset( $manu_id[0]))
-            {
+            if (isset($manu_id[0])) {
                 $product->manu_id = $manu_id[0]->id;
-            }
-            else {
+            } else {
                 $product->manu_id = 0;
             }
             $product_shop_name = 'Lotte Mall';
             $product->shop_name = $product_shop_name;
             $product->save();
 
-//            echo ($data[0]['hits'][$i]['name']) . '<br>';
-//            echo ($data[0]['hits'][$i]['image_url']) . '<br>';
-//            echo ($data[0]['hits'][$i]['url']) . '<br>';
-//            echo ($data[0]['hits'][$i]['product_brand']) . '<br>';
-//            echo ($data[0]['hits'][$i]['price_default']) . '<br>';
         }
 
     }
+
     public function getPriceAdayroi($url)
     {
 
         $html = HtmlDomParser::file_get_html($url);
         $dom = $html->find('nav.navigation');
         $lastPage = $dom[3]->children[0]->lastChild()->children[0]->attr['href'];
-        $lastIndex = preg_split('~page=~',$lastPage);
+        $lastIndex = preg_split('~page=~', $lastPage);
         echo $lastIndex[1];
-        for($i=0; $i< $lastIndex[1] ; $i++)
-        {
+        for ($i = 0; $i < $lastIndex[1]; $i++) {
             $url = 'https://www.adayroi.com/dien-thoai-di-dong-c323?q=%3Arelevance&page=' . $i;
             $html = HtmlDomParser::file_get_html($url);
             $dom = $html->find('div.product-item__container');
-            foreach ($dom as $data)
-            {
+            foreach ($dom as $data) {
                 echo $data->children[1]->children[0]->plaintext . '<br>';
                 echo $data->children[1]->children[1]->children[0]->plaintext . '<br>';
-                echo $data->children[0]->children[0]->attr['data-src']. '<br>';
+                echo $data->children[0]->children[0]->attr['data-src'] . '<br>';
                 echo $data->children[0]->attr['href'] . '<br>';
             }
         }
 
     }
-    public  function Fpt()
-    {
 
-        $url = 'https://fptshop.com.vn/dien-thoai?sort=gia-thap-den-cao&trang=2';
+    /*
+     * Method get list product from Fpt-Shop
+     *
+     * Insert products into produtcs table
+     */
+    public function Fpt()
+    {
+        ini_set('max_execution_time', 3000);
+        $url = 'https://fptshop.com.vn/dien-thoai?sort=gia-cao-den-thap&trang=2';
         $html = HtmlDomParser::file_get_html($url);
         $domLastPage = $html->find('div.f-cmtpaging');
         $lastPage = $domLastPage[0]->children[2]->attr['data-page'];
-        $i=1;
-        while ($i < $lastPage-2)
-        {
-            $url = 'https://fptshop.com.vn/dien-thoai?sort=gia-cao-den-thap&trang='.$i;
+        $indexPage = 1;
+        $id = 1;
+        while ($indexPage < $lastPage - 2) {
+            $url = 'https://fptshop.com.vn/dien-thoai?sort=gia-cao-den-thap&trang=' . $indexPage;
             $html = HtmlDomParser::file_get_html($url);
             $dom = $html->find('div.fs-lpil-if');
             $baseUrl = 'https://fptshop.com.vn';
-            foreach ($dom as $data)
-            {
+
+            foreach ($dom as $data) {
                 $product = new Product();
-                echo $name = $data->children[0]->children[0]->plaintext . '<br>'; // name
-                $find   = 'iphone';
-                switch ($find){
-                    case "iphone":
-                        $pos = strpos($name, "iphone" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Apple')->get();
-                        }
-                        break;
-                    case "samsung":
-                        $pos = strpos($name, "samsung" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','SamSung')->get();
-                        }
-                        break;
-                    case "Xperia":
-                        $pos = strpos($name, "Xperia" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Sony')->get();
-                        }
-                        break;
-                    case "Oppo":
-                        $pos = strpos($name, "Oppo" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Oppo')->get();
-                        }
-                        break;
-                    case "HTC":
-                        $pos = strpos($name, "HTC");
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','HTC')->get();
-                        }
-                        break;
-                    case "Huawei":
-                        $pos = strpos($name, "Huawei");
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Huawei')->get();
-                        }
-                        break;
-                    case "Vivo":
-                        $pos = strpos($name,"Vivo" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Vivo')->get();
-                        }
-                        break;
-                    case "Motorola":
-                        $pos = strpos($name,"Motorola" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Motorola')->get();
-                        }
-                        break;
-                    case "Philips":
-                        $pos = strpos($name,"Philips" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Philips')->get();
-                        }
-                        break;
-                    case "Mobiistar":
-                        $pos = strpos($name,"Mobiistar" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Mobiistar')->get();
-                        }
-                        break;
-                    case "Nokia":
-                        $pos = strpos($name,"Nokia" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Nokia')->get();
-                        }
-                        break;
-                    case "Asus":
-                        $pos = strpos($name,"Asus" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Asus')->get();
-                        }
-                        break;
-                    case "Xiaomi":
-                        $pos = strpos($name, "Xiaomi");
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Xiaomi')->get();
-                        }
-                        break;
-                    case "Masstel":
-                        $pos = strpos($name, "Masstel" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Masstel')->get();
-                        }
-                        break;
-                    case "Mobell":
-                        $pos = strpos($name,"Mobell" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Mobell')->get();
-                        }
-                        break;
-                    case "BlackBerry":
-                        $pos = strpos($name,  "BlackBerry");
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','BlackBerry')->get();
-                        }
-                        break;
-                    case "Itel":
-                        $pos = strpos($name,"Itel" );
-                        if ($pos !== false) {
-                            $manu_id = $manu_facture = Manufacture::select('id')->where('name','Itel')->get();
-                        }
-                        break;
+                $all_product = new AllProducts();
+                $price = (int)str_replace('.', '', $data->children[0]->children[1]->plaintext);
+                $all_product->price = $price;
+
+                $name = $data->children[0]->children[0]->plaintext; // name
+                $all_product->name = $name;
+                $all_product->shop_name = 'FPT Shop';
+                $all_product->site_id = 3;
+                $product->name = $name;
+//                $product->id = $id;
+                $slug = $id . '-' . str_slug($name, '-');
+                $product->slug = $slug;
+                $url = $baseUrl . $data->children[0]->children[0]->children[0]->attr['href'];
+
+                $all_product->url = $url;
+                $product->link_product = $url;
+
+                if (isset($data->parent->children[0]->children[0]->children[0]->attr['data-original'])) { // URL thumb
+                    $product->thumb = $data->parent->children[0]->children[0]->children[0]->attr['data-original'];
+                    $all_product->thumb = $data->parent->children[0]->children[0]->children[0]->attr['data-original'];
+                }
+                if (strpos(strtolower($name), 'iphone') !== false) {
+                    $manu_id = 1;
+                }
+                if (strpos(strtolower($name), 'samsung') !== false) {
+
+                    $manu_id = 2;
+                }
+                if (strpos(strtolower($name), 'oppo') !== false) {
+
+                    $manu_id = 4;
+                }
+                if (strpos(strtolower($name), 'htc') !== false) {
+
+                    $manu_id = 5;
+                }
+                if (strpos(strtolower($name), 'huawei') !== false) {
+
+                    $manu_id = 6;
+                }
+                if (strpos(strtolower($name), 'vivo') !== false) {
+
+                    $manu_id = 7;
+                }
+                if (strpos(strtolower($name), 'xperia') !== false) {
+
+                    $manu_id = 3;
+                }
+                if (strpos(strtolower($name), 'motorola') !== false) {
+
+                    $manu_id = 8;
+                }
+                if (strpos(strtolower($name), 'philips') !== false) {
+
+                    $manu_id = 9;
+                }
+                if (strpos(strtolower($name), 'mobiistar') !== false) {
+
+                    $manu_id = 10;
+                }
+                if (strpos(strtolower($name), 'nokia') !== false) {
+
+                    $manu_id = 11;
+                }
+                if (strpos(strtolower($name), 'asus') !== false) {
+
+                    $manu_id = 12;
+                }
+                if (strpos(strtolower($name), 'xiaomi') !== false) {
+
+                    $manu_id = 13;
+                }
+                if (strpos(strtolower($name), 'masstel') !== false) {
+
+                    $manu_id = 14;
+                }
+                if (strpos(strtolower($name), 'mobell') !== false) {
+
+                    $manu_id = 15;
+                }
+                if (strpos(strtolower($name), 'blackBerry') !== false) {
+
+                    $manu_id = 16;
+                }
+                if (strpos(strtolower($name), 'itel') !== false) {
+
+                    $manu_id = 17;
+                }
+                if (strpos(strtolower($name), 'meizu') !== false) {
+
+                    $manu_id = 18;
+                }
+                if (strpos(strtolower($name), 'wiko') !== false) {
+
+                    $manu_id = 20;
+                }
+                if (strpos(strtolower($name), 'lenovo') !== false) {
+
+                    $manu_id = 19;
                 }
 
+                $product->manufacture_id = $manu_id;
+                $all_product->manufacture_id = $manu_id;
 
-//                echo $baseUrl . $data->children[0]->children[0]->children[0]->attr['href'] . '<br>'; // Url
-//                if(isset($data->children[1]->children[0]->children[0]->children[0]))
-//                {
-//                    echo $data->children[1]->children[0]->children[0]->children[0]->plaintext . '<br>'; // Màn Hình
-//                }
-//                if(isset($data->children[1]->children[0]->children[0]->children[1]))
-//                {
-//                    echo $data->children[1]->children[0]->children[0]->children[1]->plaintext . '<br>'; // Kích thước màn hình
-//                }
-//                if(isset($data->children[1]->children[0]->children[1]->children[0]))
-//                {
-//                    echo $data->children[1]->children[0]->children[1]->children[0]->plaintext . '<br>'; // Camera
-//                }
-//                if(isset($data->children[1]->children[0]->children[1]->children[1]))
-//                {
-//                    echo $data->children[1]->children[0]->children[1]->children[1]->plaintext . '<br>'; // Độ phân giải camera
-//                }
-//                if(isset($data->children[1]->children[0]->children[2]->children[0]))
-//                {
-//                    echo $data->children[1]->children[0]->children[2]->children[0]->plaintext . '<br>'; // Pin
-//                }
-//                if(isset($data->children[1]->children[0]->children[2]->children[1]))
-//                {
-//                    echo $data->children[1]->children[0]->children[2]->children[1]->plaintext . '<br>'; // Dung Lượng Pin
-//                }
-//                if(isset($data->children[1]->children[0]->children[3]->children[0]))
-//                {
-//                    echo $data->children[1]->children[0]->children[3]->children[0]->plaintext . '<br>'; // Ram:
-//                }
-//                if(isset($data->children[1]->children[0]->children[3]->children[1]))
-//                {
-//                    echo $data->children[1]->children[0]->children[3]->children[1]->plaintext . '<br>'; // Dung Lượng Ram:
-//                }
-//                if(isset($data->children[1]->children[0]->children[4]->children[0]))
-//                {
-//                    echo $data->children[1]->children[0]->children[4]->children[0]->plaintext . '<br>'; // CPU:
-//                }
-//                if(isset($data->children[1]->children[0]->children[4]->children[1]))
-//                {
-//                    echo $data->children[1]->children[0]->children[4]->children[1]->plaintext . '<br>'; // Tốc Độ CPU:
-//                }
-//                if(isset($data->children[1]->children[0]->children[5]->children[0]))
-//                {
-//                    echo $data->children[1]->children[0]->children[5]->children[0]->plaintext . '<br>'; // Hệ Điều Hành:
-//                }
-//                if(isset($data->children[1]->children[0]->children[5]->children[1]))
-//                {
-//                    echo $data->children[1]->children[0]->children[5]->children[1]->plaintext . '<br>'; // Phiên Bản
-//                }
+                $product->save();
+                $att = new Attribute();
+
+                $html = HtmlDomParser::file_get_html($url);
+                $dom = $html->find('ul.fs-dttsktul');
+                $strDes = '';
+                if (isset($dom[0]->children))
+                {
+                    foreach ($dom[0]->children as $element) {
+                        $strDes = $strDes . $element;
+                    }
+                }
+
+                $att->des = $strDes;
+
+                for ($i = 1; $i < 70; $i++) {
+                    if (isset($dom[0]->children[$i]->children[1]->plaintext)) {
+                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "doph226ngiaim224nh236nh") !== false) {
+                            $att->resolution = $dom[0]->children[$i]->children[1]->plaintext;
+                        }
+                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "camerasau") !== false) {
+                            $att->behind_cam = $dom[0]->children[$i]->children[1]->plaintext;
+                        }
+                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "cameratruoc") !== false) {
+                            $att->front_cam = $dom[0]->children[$i]->children[1]->plaintext;
+                        }
+                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "tocdocpu") !== false) {
+                            $att->cpu_speed = $dom[0]->children[$i]->children[1]->plaintext;
+                        }
+                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "sonh226n") !== false) {
+                            $att->cpu_core = $dom[0]->children[$i]->children[1]->plaintext;
+                        }
+                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "chipset") !== false) {
+                            $att->chipset = $dom[0]->children[$i]->children[1]->plaintext;
+                        }
+                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "rom") !== false) {
+                            $att->rom = $dom[0]->children[$i]->children[1]->plaintext;
+                        }
+                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "ram") !== false) {
+                            $att->ram = $dom[0]->children[$i]->children[1]->plaintext;
+                        }
+                        if ((int)strcmp($dom[0]->children[$i]->children[0]->plaintext, 'Khe cắm sim :') === 0) {
+                            $att->sim = $dom[0]->children[$i]->children[1]->plaintext;
+                        }
+                    }
+                }
+                if (isset($data->children[1]->children[0]->children[5]->children[1])) {
+                    $os = $data->children[1]->children[0]->children[5]->children[1]->plaintext; // Phiên Bản
+                    $att->os = $os;
+                }
+                if (isset($data->children[1]->children[0]->children[2]->children[1])) {
+                    $pin = $data->children[1]->children[0]->children[2]->children[1]->plaintext; // Dung Lượng Pin
+                    $att->battery = $pin;
+                }
+
+                $product->attributes()->save($att);
+                $all_product->save();
+
+                $id++;
             }
-//            $i++;
+           $indexPage++;
         }
+    }
+
+    public function test()
+    {
+//        ini_set('max_execution_time', 3000);
+//        $product = Product::select('id', 'link_product')->get();
+//        $fields = DB::getSchemaBuilder()->getColumnListing('attributes');
+//        dd($fields);
+        $data = [];
+//        foreach ($product as $key => $p) {
+//            $url = $p->link_product;
+        $html = HtmlDomParser::file_get_html('https://fptshop.com.vn/dien-thoai/samsung-galaxy-a7-2017');
+        $dom = $html->find('ul.fs-dttsktul');
+        $arrConfig = [];
+        foreach ($dom[0] as $key => $ele) {
+            echo $ele;
+        }
+        array_push($data, $arrConfig);
+//            $attribute = new Attribute();
+//            $attribute::created($arrConfig);
+
+
+//        }
+        dd($data);
     }
 
 }

@@ -8,12 +8,13 @@ class AllProducts extends Model
 {
     protected $table = 'all_products';
 
-    public  function manufactures()
+    public  function manufacture()
     {
         return $this->belongsTo('App\Manufacture');
     }
-    public  function sites()
+    public  function site()
     {
         return $this->belongsTo('App\Site');
     }
+
 }

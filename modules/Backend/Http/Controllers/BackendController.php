@@ -2,6 +2,8 @@
 
 namespace Modules\Backend\Http\Controllers;
 
+use App\Manufacture;
+use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -80,4 +82,5 @@ class BackendController extends Controller
     {
         return view("backend::pages.config");
     }
+
 }

@@ -80,9 +80,22 @@ class ManufactureSeeder extends Seeder
                 'id'=>'17',
                 'name'=>'Itel'
             ],
+            [
+                'id'=>'18',
+                'name'=>'Meizu'
+            ],
+            [
+                'id'=>'19',
+                'name'=>'Lenovo'
+            ],
+            [
+                'id'=>'20',
+                'name'=>'Wiko'
+            ],
         ];
 
         foreach($manufactureList as $record) {
+            $record['slug'] = $record['id'].'-'. str_slug($record['name'],'-');
             Manufacture::create($record);
         }
 

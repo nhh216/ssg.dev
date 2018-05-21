@@ -18,8 +18,11 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->integer('manufacture_id');
 //            $table->integer('category_id');
+            $table->string('thumb');
             $table->string('slug');
-
+            $table->integer('min_price')->nullable();
+            $table->string('link_product')->nullable();
+            
             $table->timestamps();
         });
     }

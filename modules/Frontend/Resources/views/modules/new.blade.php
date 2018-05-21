@@ -1,8 +1,7 @@
 <div class="row">
     <div class="block-container">
         <div class="section-title">
-            <h4 class="center">
-                Thông tin mua sắm<br>hữu ích            </h4>
+            <h4 class="center"> Thông tin mua sắm hữu ích </h4>
         </div>
     </div>
     <div class="related-news-container">

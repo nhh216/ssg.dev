@@ -1,4 +1,4 @@
-<div class="page-container" >
+<div class="page-container">
     <div class="header navbar">
         <div class="header-container">
             <ul class="nav-left">
@@ -33,7 +33,8 @@
                                 <li>
                                     <a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
                                         <div class="peer mR-15">
-                                            <img class="w-3r bdrs-50p" src="https://randomuser.me/api/portraits/men/1.jpg" alt="">
+                                            <img class="w-3r bdrs-50p"
+                                                 src="https://randomuser.me/api/portraits/men/1.jpg" alt="">
                                         </div>
                                         <div class="peer peer-greed">
                           <span>
@@ -51,7 +52,8 @@
                                 <li>
                                     <a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
                                         <div class="peer mR-15">
-                                            <img class="w-3r bdrs-50p" src="https://randomuser.me/api/portraits/men/2.jpg" alt="">
+                                            <img class="w-3r bdrs-50p"
+                                                 src="https://randomuser.me/api/portraits/men/2.jpg" alt="">
                                         </div>
                                         <div class="peer peer-greed">
                           <span>
@@ -69,7 +71,8 @@
                                 <li>
                                     <a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
                                         <div class="peer mR-15">
-                                            <img class="w-3r bdrs-50p" src="https://randomuser.me/api/portraits/men/3.jpg" alt="">
+                                            <img class="w-3r bdrs-50p"
+                                                 src="https://randomuser.me/api/portraits/men/3.jpg" alt="">
                                         </div>
                                         <div class="peer peer-greed">
                           <span>
@@ -110,7 +113,8 @@
                                 <li>
                                     <a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
                                         <div class="peer mR-15">
-                                            <img class="w-3r bdrs-50p" src="https://randomuser.me/api/portraits/men/1.jpg" alt="">
+                                            <img class="w-3r bdrs-50p"
+                                                 src="https://randomuser.me/api/portraits/men/1.jpg" alt="">
                                         </div>
                                         <div class="peer peer-greed">
                                             <div>
@@ -130,7 +134,8 @@
                                 <li>
                                     <a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
                                         <div class="peer mR-15">
-                                            <img class="w-3r bdrs-50p" src="https://randomuser.me/api/portraits/men/2.jpg" alt="">
+                                            <img class="w-3r bdrs-50p"
+                                                 src="https://randomuser.me/api/portraits/men/2.jpg" alt="">
                                         </div>
                                         <div class="peer peer-greed">
                                             <div>
@@ -150,7 +155,8 @@
                                 <li>
                                     <a href="" class="peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100">
                                         <div class="peer mR-15">
-                                            <img class="w-3r bdrs-50p" src="https://randomuser.me/api/portraits/men/3.jpg" alt="">
+                                            <img class="w-3r bdrs-50p"
+                                                 src="https://randomuser.me/api/portraits/men/3.jpg" alt="">
                                         </div>
                                         <div class="peer peer-greed">
                                             <div>
@@ -221,10 +227,3 @@
     <main class="main-content bgc-grey-100">
         <div id="mainContent">
 
-        </div>
-    </main>
-    <footer class="bdT ta-c p-30 lh-0 fsz-sm c-grey-600">
-        <span>Copyright © 2017 Designed by
-          <a href="https://colorlib.com" target="_blank" title="Colorlib">Colorlib</a>. All rights reserved.</span>
-    </footer>
-</div>

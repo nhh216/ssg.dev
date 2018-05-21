@@ -1,7 +1,4 @@
 
-<div id="loader">
-    <div class="spinner"></div>
-</div>
 <div class="sidebar">
     <div class="sidebar-inner">
         <div class="sidebar-logo">
@@ -39,19 +36,35 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="sidebar-link" href="email.html">
+                <a class="sidebar-link" href="admin/list-products">
               <span class="icon-holder">
                 <i class="c-brown-500 ti-email"></i>
               </span>
-                    <span class="title">Email</span>
+                    <span class="title">Sản Phẩm</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="sidebar-link" href="compose.html">
+                <a class="sidebar-link" href="/admin/list-new/">
+              <span class="icon-holder">
+                <i class="c-blue-500 ti-tag"></i>
+              </span>
+                    <span class="title">Danh Sách Coupon</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="sidebar-link" href="/admin/list-new/">
               <span class="icon-holder">
                 <i class="c-blue-500 ti-share"></i>
               </span>
-                    <span class="title">Compose</span>
+                    <span class="title">Bài Viết</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="sidebar-link" href="{{route('siteconfig')}}">
+              <span class="icon-holder">
+                <i class="c-deep-orange-500 ti-user"></i>
+              </span>
+                    <span class="title">Quản Lý Tài Khoản</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -63,11 +76,11 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="sidebar-link" href="chat.html">
+                <a class="sidebar-link" href="/admin/home-ads">
               <span class="icon-holder">
                 <i class="c-deep-purple-500 ti-comment-alt"></i>
               </span>
-                    <span class="title">Chat</span>
+                    <span class="title">Quản Lý Banner Top</span>
                 </a>
             </li>
             <li class="nav-item">
