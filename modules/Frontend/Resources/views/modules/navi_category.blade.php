@@ -3,7 +3,7 @@
         <div class="cate-lb-ctn">
 
         </div>
-        <div class="col-md-3"></div>
+
         <div class="col-md-6">
             <ul class="category-container">
                 <li class="category-item">

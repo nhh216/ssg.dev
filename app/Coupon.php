@@ -9,8 +9,8 @@ class Coupon extends Model
     //
     protected $table = 'coupons';
 
-    public  function  cate_coupons()
+    public  function  category()
     {
-        return $this->belongsToMany('App\CateCoupon');
+        return $this->belongsToMany('App\Category');
     }
 }

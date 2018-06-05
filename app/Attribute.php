@@ -8,15 +8,15 @@ class Attribute extends Model
 {
     //
     protected $table = 'attributes';
+    protected  $guarded = [];
 
-    public  function value()
+
+    public  function values()
     {
-        return $this->hasMany('App\Value');
+        return $this->belongsToMany('App\Value','attribute_value','attribute_id','value_id');
     }
 
-    public  function product()
-    {
-        return $this->belongsTo('App\Product');
-    }
+
+
 
 }

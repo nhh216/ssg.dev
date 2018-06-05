@@ -20,29 +20,18 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
         var app = new Vue({
-            el: '#vue-app',
+            el: '#header',
             data: {
                 listProduct: '',
             },
             methods: {
-                getFilterRes: function(res) {
-                    axios.get('dien-thoai/filter-res/'.res)
-                        .then((response)=>{
-                            console.log(res);
-                                this.listProduct = response.data;
-                                console.log(this.listProduct);
-                        }).catch(function (error) {
-                            console.log(error);
-                    });
-
+                getSearchInput: function (event) {
+                    console.log(event.key);
                 },
-
-
-
-            }
-
-
-
+            },
+                getcaigiday: function () {
+                    
+                }
         })
     </script>
 @endpush

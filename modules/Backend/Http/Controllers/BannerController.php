@@ -22,4 +22,6 @@ class BannerController extends Controller
 
         return view('backend::pages.edit_banner_top');
     }
+
+
 }

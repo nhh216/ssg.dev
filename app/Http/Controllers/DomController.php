@@ -10,10 +10,12 @@ namespace App\Http\Controllers;
 
 use App\AllProducts;
 use App\Attribute;
+use App\Attribute_Value;
 use App\Http\Controllers\Controller;
 use App\Manufacture;
 use App\Product;
 use App\Shop;
+use App\Value;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use function simplehtmldom_1_5\file_get_html;
@@ -25,16 +27,19 @@ class DomController extends Controller
     public function domHtml()
     {
 //        $urlTiki = 'https://tiki.vn/dien-thoai-smartphone/c1795?order=price%2Casc';
-        $urlLazada = 'https://www.lazada.vn/dien-thoai-di-dong/apple--oppo--mobiistar--samsung--xiaomi--nokia--huawei/?page=1';
+//        $urlLazada = 'https://www.lazada.vn/dien-thoai-di-dong/apple--oppo--mobiistar--samsung--xiaomi--nokia--huawei/?page=1';
 //        $urlLotte = 'https://els.lotte.vn/api/v1/categories/687/products';
 //        $urlAdayroi  = 'https://www.adayroi.com/dien-thoai-di-dong-c323?q=%3Arelevance&page=';
 //
-        $this->getPriceLazada($urlLazada);
+//        $this->getPriceLazada($urlLazada);
 //        $this->getDataTiki($urlTiki);
 //        $this->getDataLotte($urlLotte);
 //        $this->getPriceAdayroi($urlAdayroi);
+//        $this->getPriceVuiVui();
+        $this->HoangHa();
 //        $this->Fpt();
 //        $this->test();
+//        $this->updateListProduct();
     }
 
     public function getPriceLazada($url)
@@ -75,7 +80,6 @@ class DomController extends Controller
             $data = json_decode($match[1], true);
             for ($i = 0; $i < sizeof($data['mods']['listItems']); $i++) {
                 $product = new AllProducts();
-//                $shop = new Shop();
                 $product_name = $data['mods']['listItems'][$i]['name'];
                 $product->name = $product_name;
                 $product_url = $data['mods']['listItems'][$i]['productUrl'];
@@ -84,18 +88,10 @@ class DomController extends Controller
                 $product->thumb = $product_image;
                 $product_price = intval($data['mods']['listItems'][$i]['price']);
                 $product->price = $product_price;
-                $product_manu_name = $data['mods']['listItems'][$i]['brandName'];
-                $manu_id = Manufacture::select('id')->where('name', $product_manu_name)->get();
-//                dd($manu_id);
-                $product->manufacture_id = $manu_id[0]->id;
                 $product_shop_name = $data['mods']['listItems'][$i]['sellerName'];
                 $product->shop_name = $product_shop_name;
                 $product->site_id = 1;
-//                 $shop->
-//                print_r( $data['mods']['listItems'][$i]['description']);
                 $product->save();
-//             echo       $manu_id = Manufacture::select('id')->where('name',$product_manu_name)->get() . '<br>';
-//                echo '<br>';
             }
         }
         $nextPage = [];
@@ -131,15 +127,21 @@ class DomController extends Controller
         $price = 'data-price';
         $title = 'data-title';
         $price = 'data-price';
-        $brand = 'data-brand';
+
         foreach ($listProduct as $listPr) {
-            echo $listPr->children[0]->href . '<br>';
+            $product = new AllProducts();
+            $product->url = $listPr->children[0]->href ;
             if (isset($listPr->children(0)->children(0)->children(0)->src)) {
-                echo $img = ($listPr->children(0)->children(0)->children(0))->src . '<br>';
+                $product->thumb =  ($listPr->children(0)->children(0)->children(0))->src;
+            }else{
+                $product->thumb = '';
             }
-            echo $listPr->$title . '<br>';
-            echo $listPr->$price . '<br>';
-            echo $listPr->$brand . '<br>';
+            $product->name = $listPr->$title ;
+            $product->site_id = 8 ;
+            $product->price = $listPr->$price;
+            $product->shop_name = 'Tiki';
+            $product->save();
+
         }
         if (isset($str)) {
             if (isset($str['0'])) {
@@ -178,17 +180,11 @@ class DomController extends Controller
             $product_url = $data[0]['hits'][$i]['url'];
             $product->url = $product_url;
             $product_image = $data[0]['hits'][$i]['image_url'];
-            $product->image = $product_image;
+            $product->thumb = $product_image;
             $product_price = $data[0]['hits'][$i]['price_default'];
             $product->price = $product_price;
-            $product->site_id = 4;
+            $product->site_id = 12;
             $product_manu_name = $data[0]['hits'][$i]['product_brand'];
-            $manu_id = Manufacture::select('id')->where('name', $product_manu_name)->get();
-            if (isset($manu_id[0])) {
-                $product->manu_id = $manu_id[0]->id;
-            } else {
-                $product->manu_id = 0;
-            }
             $product_shop_name = 'Lotte Mall';
             $product->shop_name = $product_shop_name;
             $product->save();
@@ -204,16 +200,25 @@ class DomController extends Controller
         $dom = $html->find('nav.navigation');
         $lastPage = $dom[3]->children[0]->lastChild()->children[0]->attr['href'];
         $lastIndex = preg_split('~page=~', $lastPage);
-        echo $lastIndex[1];
         for ($i = 0; $i < $lastIndex[1]; $i++) {
             $url = 'https://www.adayroi.com/dien-thoai-di-dong-c323?q=%3Arelevance&page=' . $i;
+            $baseUrl =  'https://www.adayroi.com/';
             $html = HtmlDomParser::file_get_html($url);
             $dom = $html->find('div.product-item__container');
             foreach ($dom as $data) {
-                echo $data->children[1]->children[0]->plaintext . '<br>';
-                echo $data->children[1]->children[1]->children[0]->plaintext . '<br>';
-                echo $data->children[0]->children[0]->attr['data-src'] . '<br>';
-                echo $data->children[0]->attr['href'] . '<br>';
+                $all_product = new AllProducts();
+                $all_product->name = $data->children[1]->children[0]->plaintext;
+                $all_product->price=(int) str_replace('.','',$data->children[1]->children[1]->children[0]->plaintext);
+                if (isset( $data->children[0]->children[0]->attr['data-src'] ))
+                {
+                    $all_product->thumb = $data->children[0]->children[0]->attr['data-src'];
+                }else{
+                    $all_product->thumb= '';
+                }
+                $all_product->url= $baseUrl. $data->children[0]->attr['href'];
+                $all_product->site_id=4;
+                $all_product->shop_name= 'Adayroi';
+                $all_product->save();
             }
         }
 
@@ -226,13 +231,16 @@ class DomController extends Controller
      */
     public function Fpt()
     {
+
+
+
         ini_set('max_execution_time', 3000);
         $url = 'https://fptshop.com.vn/dien-thoai?sort=gia-cao-den-thap&trang=2';
         $html = HtmlDomParser::file_get_html($url);
         $domLastPage = $html->find('div.f-cmtpaging');
         $lastPage = $domLastPage[0]->children[2]->attr['data-page'];
         $indexPage = 1;
-        $id = 1;
+
         while ($indexPage < $lastPage - 2) {
             $url = 'https://fptshop.com.vn/dien-thoai?sort=gia-cao-den-thap&trang=' . $indexPage;
             $html = HtmlDomParser::file_get_html($url);
@@ -240,28 +248,31 @@ class DomController extends Controller
             $baseUrl = 'https://fptshop.com.vn';
 
             foreach ($dom as $data) {
-                $product = new Product();
+                $dataProduct = [];
                 $all_product = new AllProducts();
                 $price = (int)str_replace('.', '', $data->children[0]->children[1]->plaintext);
                 $all_product->price = $price;
-
                 $name = $data->children[0]->children[0]->plaintext; // name
+                $p = Product::where('name',$name)->first();
+                if (isset($p))
+                {
+                  continue;
+                }
                 $all_product->name = $name;
                 $all_product->shop_name = 'FPT Shop';
                 $all_product->site_id = 3;
-                $product->name = $name;
-//                $product->id = $id;
-                $slug = $id . '-' . str_slug($name, '-');
-                $product->slug = $slug;
+                $dataProduct['name'] = $name;
+
                 $url = $baseUrl . $data->children[0]->children[0]->children[0]->attr['href'];
 
                 $all_product->url = $url;
-                $product->link_product = $url;
+                $dataProduct['link_product'] = $url;
 
                 if (isset($data->parent->children[0]->children[0]->children[0]->attr['data-original'])) { // URL thumb
-                    $product->thumb = $data->parent->children[0]->children[0]->children[0]->attr['data-original'];
+                    $dataProduct['thumb'] = $data->parent->children[0]->children[0]->children[0]->attr['data-original'];
                     $all_product->thumb = $data->parent->children[0]->children[0]->children[0]->attr['data-original'];
                 }
+
                 if (strpos(strtolower($name), 'iphone') !== false) {
                     $manu_id = 1;
                 }
@@ -342,11 +353,8 @@ class DomController extends Controller
                     $manu_id = 19;
                 }
 
-                $product->manufacture_id = $manu_id;
-                $all_product->manufacture_id = $manu_id;
-
-                $product->save();
-                $att = new Attribute();
+                $dataProduct['manufacture_id'] = $manu_id;
+                $product = Product::firstOrCreate($dataProduct);
 
                 $html = HtmlDomParser::file_get_html($url);
                 $dom = $html->find('ul.fs-dttsktul');
@@ -358,79 +366,138 @@ class DomController extends Controller
                     }
                 }
 
-                $att->des = $strDes;
-
-                for ($i = 1; $i < 70; $i++) {
-                    if (isset($dom[0]->children[$i]->children[1]->plaintext)) {
-                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "doph226ngiaim224nh236nh") !== false) {
-                            $att->resolution = $dom[0]->children[$i]->children[1]->plaintext;
-                        }
-                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "camerasau") !== false) {
-                            $att->behind_cam = $dom[0]->children[$i]->children[1]->plaintext;
-                        }
-                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "cameratruoc") !== false) {
-                            $att->front_cam = $dom[0]->children[$i]->children[1]->plaintext;
-                        }
-                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "tocdocpu") !== false) {
-                            $att->cpu_speed = $dom[0]->children[$i]->children[1]->plaintext;
-                        }
-                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "sonh226n") !== false) {
-                            $att->cpu_core = $dom[0]->children[$i]->children[1]->plaintext;
-                        }
-                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "chipset") !== false) {
-                            $att->chipset = $dom[0]->children[$i]->children[1]->plaintext;
-                        }
-                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "rom") !== false) {
-                            $att->rom = $dom[0]->children[$i]->children[1]->plaintext;
-                        }
-                        if (strpos(str_slug($dom[0]->children[$i]->children[0]->plaintext,''), "ram") !== false) {
-                            $att->ram = $dom[0]->children[$i]->children[1]->plaintext;
-                        }
-                        if ((int)strcmp($dom[0]->children[$i]->children[0]->plaintext, 'Khe cắm sim :') === 0) {
-                            $att->sim = $dom[0]->children[$i]->children[1]->plaintext;
-                        }
+                $value =  new  Value();
+                $attribute =  new  Attribute();
+                for ($i = 1; $i < 79; $i++) {
+                    if (isset($dom[0]->children[$i]->children[0]->plaintext)) {
+                            $attr = $dom[0]->children[$i]->children[0]->plaintext;
+                            $value = $dom[0]->children[$i]->children[1]->plaintext;
+                            $attribute = Attribute::firstOrCreate(['name' => $attr]);
+                            $value = Value::firstOrCreate(['value' => $value]);
+                            Attribute_Value::firstOrCreate(['attribute_id' => $attribute->id,'value_id'=>$value->id,'product_id'=>$product->id]);
                     }
                 }
-                if (isset($data->children[1]->children[0]->children[5]->children[1])) {
-                    $os = $data->children[1]->children[0]->children[5]->children[1]->plaintext; // Phiên Bản
-                    $att->os = $os;
-                }
-                if (isset($data->children[1]->children[0]->children[2]->children[1])) {
-                    $pin = $data->children[1]->children[0]->children[2]->children[1]->plaintext; // Dung Lượng Pin
-                    $att->battery = $pin;
-                }
 
-                $product->attributes()->save($att);
                 $all_product->save();
-
-                $id++;
             }
            $indexPage++;
         }
     }
 
+    public  function  updateListProduct()
+    {
+        $products = Product::all();
+
+        foreach ($products as $product)
+        {
+            $product->updateMinPrice();
+            if (!isset($product->slug))
+            {
+                $product->updateProduct();
+
+            }
+
+        }
+    }
+
+
     public function test()
     {
+
 //        ini_set('max_execution_time', 3000);
 //        $product = Product::select('id', 'link_product')->get();
 //        $fields = DB::getSchemaBuilder()->getColumnListing('attributes');
 //        dd($fields);
-        $data = [];
-//        foreach ($product as $key => $p) {
-//            $url = $p->link_product;
-        $html = HtmlDomParser::file_get_html('https://fptshop.com.vn/dien-thoai/samsung-galaxy-a7-2017');
-        $dom = $html->find('ul.fs-dttsktul');
-        $arrConfig = [];
-        foreach ($dom[0] as $key => $ele) {
-            echo $ele;
-        }
-        array_push($data, $arrConfig);
-//            $attribute = new Attribute();
-//            $attribute::created($arrConfig);
-
-
+//        $data = [];
+////        foreach ($product as $key => $p) {
+////            $url = $p->link_product;
+//        $html = HtmlDomParser::file_get_html('https://fptshop.com.vn/dien-thoai/samsung-galaxy-a7-2017');
+//        $dom = $html->find('ul.fs-dttsktul');
+//        $arrConfig = [];
+//        foreach ($dom[0] as $key => $ele) {
+//            echo $ele;
 //        }
-        dd($data);
+//        array_push($data, $arrConfig);
+////            $attribute = new Attribute();
+////            $attribute::created($arrConfig);
+//
+//
+////        }
+//        dd($data);
     }
+
+    public function getPriceVuiVui()
+    {   ini_set('max_execution_time', 3000);
+        $index = 1;
+        while ($index < 6) {
+            $url = 'https://www.vuivui.com/dien-thoai-di-dong/?page=' . $index . '&sort=PriceDesc';
+            $html = HtmlDomParser::file_get_html($url);
+            $dom = $html->find('div.itmpro');
+            for ($i = 0; $i < sizeof($dom); $i++) {
+                $product = new AllProducts();
+                if (isset($dom[$i]->children(3)->children(0)->plaintext))
+                {
+                    $product->price = $price = (int) str_replace('.','',$dom[5]->children(3)->children(0)->plaintext);
+                }else
+                {
+                    continue;
+                }
+                if (!isset($dom[$i]->children(0)->attr['href']))
+                {
+                    continue;
+                }
+                else
+                {
+                    $product->url =  $link_pro = $dom[$i]->children(0)->attr['href'] ;
+
+                }
+                $product->name = $name_pro = $dom[$i]->children(1)->plaintext ;
+                if (!isset($dom[$i]->children(0)->children(0)->attr['data-src']))
+                {
+                    continue;
+
+                }else{
+                    $product->thumb  = $dom[$i]->children(0)->children(0)->attr['data-src'] ;
+
+                }
+                $product->site_id = 7;
+                $product->shop_name= 'Vui VUi';
+                $product->save();
+            }
+            $index++;
+        }
+
+    }
+
+    public function HoangHa()
+    {
+        $url = 'https://hoanghamobile.com/dien-thoai-di-dong-c14.html?sort=11&p=1';
+        $baseUrl = 'https://hoanghamobile.com';
+        $html = HtmlDomParser::file_get_html($url);
+        $nextPage = $html->find('div[class=\'paging\']');
+        $lastPage = $nextPage[0]->children(6)->attr['href'];
+        $listPage = preg_split('~p=~', $lastPage);
+        $indexOfLastPage = $listPage[1];
+        for ($i = 1; $i < $indexOfLastPage + 1; $i++) {
+            $this->getPriceHoangHa('https://hoanghamobile.com/dien-thoai-di-dong-c14.html?sort=11&p=' . $i);
+        }
+    }
+    public function getPriceHoangHa($url)
+    {
+        $html = HtmlDomParser::file_get_html($url);
+        $baseUrl = 'https://hoanghamobile.com';
+        foreach ($html->find('.list-item') as $element) {
+
+            $product = new AllProducts();
+            $product->name = $element->find('div.product-name',0)->text();
+            $product->price =(int) str_replace('.','',$element->find('div.product-price',0)->text()) ;
+            $product->url = $baseUrl . $element->find('a',0)->getAttribute('href');
+            $product->thumb= $element->find('div.mosaic-backdrop img',0)->getAttribute('src');
+            $product->site_id = 9;
+            $product->shop_name = 'Hoàng Hà';
+            $product->save();
+        }
+    }
+
 
 }

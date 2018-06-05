@@ -8,6 +8,7 @@
 
 namespace Modules\Backend\Http\Controllers;
 use App\Attribute;
+use App\Attribute_Value;
 use App\Manufacture;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -17,15 +18,28 @@ class ProductController
 {
     public function listProduct()
     {
-        $products = Product::with('manufacture')->with('attributes')->get();
-        return view('backend::pages.listproduct',['listproduct'=>$products]);
+        $products = Product::with('manufacture')->get();
+        return view('backend::pages.list_product',['listproduct'=>$products]);
     }
 
-    public  function getProduct(Request $request)
+//    public  function getProduct(Request $request)
+//    {
+//
+//        $product = Product::where('id',$request->id)->with('manufacture')->with('attribute_value')->get();
+//        return $product;
+//    }
+//
+
+    public  function getProduct($id)
     {
 
-        $product = Product::where('id',$request->id)->with('manufacture')->with('attributes')->get();
-        return $product;
+        $product = Product::where('id',$id)->with('manufacture')->get();
+        $attr_value = Attribute_Value::where('product_id',$id)->with('attribute')->with('value')->get();
+        $data = [
+          'product'=>$product,
+          'att_value'=> $attr_value
+        ];
+        return $data;
     }
 
     public  function  getListManufacture()
@@ -40,12 +54,27 @@ class ProductController
         $attribute = Attribute::find($request->config_id);
         $attribute->id = $request->config_id;
         $attribute->resolution = $request->resolution;
-        $attribute->camera = $request->camera;
-        $attribute->pin = $request->pin;
+        $attribute->front_cam = $request->front_cam;
+        $attribute->behind_cam = $request->behind_cam;
+        if (isset( $request->battery))
+        {
+            $attribute->battery = $request->battery;
+        }
         $attribute->ram = $request->ram;
-        $attribute->cpu = $request->cpu;
-        $attribute->os = $request->os;
+        if (isset($request->cpu_speed))
+        {
+            $attribute->cpu_speed = $request->cpu_speed;
+        }
+        if (isset($request->cpu_core))
+        {
+            $attribute->cpu_core = $request->cpu_core;
+        }
+        if (isset($request->chipset))
+        {
+            $attribute->chipset = $request->chipset;
+        }
 
+        $attribute->os = $request->os;
         $product->id = $request->id;
         $product->name = $request->name;
         $product->manufacture_id = $request->manufacture;

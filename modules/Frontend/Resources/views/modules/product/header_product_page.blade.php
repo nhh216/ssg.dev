@@ -22,8 +22,7 @@
                 <div class="search-wrapper">
                     <form action="/s" id="header-search-form">
                         <div class="search-control">
-                            <input type="search" id="search-input" value=""
-                                   placeholder="Tìm kiếm sản phẩm" autocomplete="off">
+                            <input type="search" id="search-input" value="" placeholder="Tìm kiếm sản phẩm"  v-on:keyup="getSearchInput()" >
                             <button type="submit" title="Tìm kiếm">
                                 <i class="ssg-icon icon-search"></i>
                             </button>
@@ -31,6 +30,8 @@
                         <div class="header-search-result">
                             <div class="result-inner">
                                 <div id="search-suggestion"></div>
+                                asdfasdfxz
+                                asdfasdf
                                 <div id="search-history"></div>
                             </div>
                         </div>

@@ -17,7 +17,7 @@ class SiteSeeder extends Seeder
                 'id'=>'1',
                 'link'=>'https://www.lazada.vn/',
                 'name'=>'Lazada',
-                'logo'=>'upload/stores/lazada-logo.png'
+                'logo'=>'https://img.sosanhgia.com/images/188ccd667f4448b78b3f9188f95fc102/lazada.jpg'
             ],
             [
                 'id'=>'2',
@@ -78,6 +78,12 @@ class SiteSeeder extends Seeder
                 'link'=>'https://www.dienthoaididong.com/',
                 'name'=>'Nhật Cường',
                 'logo'=>'https://img.sosanhgia.com/images/b9926fe25fa24e8ea96b421cd6eaa7d3/nhat-cuong-mobile.jpg'
+            ],
+            [
+                'id'=>'12',
+                'link'=>'https://www.lotte.vn/',
+                'name'=>'Lotte',
+                'logo'=>'https://img.sosanhgia.com/images/f842079bb5154b358f2e1cd8754bd37c/lotte.jpg'
             ],
 
 

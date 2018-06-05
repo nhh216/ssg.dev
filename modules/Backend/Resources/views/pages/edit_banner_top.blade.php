@@ -1,4 +1,4 @@
-@extends('backend::layouts.master')
+@extends('backend::layouts.master_layout')
 @push('top')
     <script src="/vendor/laravel-filemanager/js/lfm.js"></script>
 @endpush
@@ -17,7 +17,8 @@
                             <div class="form-group row">
                                 <div class="col-md-3">
                                     <span class="input-group-btn">
-                                    <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-outline-danger">
+                                    <a id="lfm-1" data-input="thumbnail" data-preview="holder"
+                                       class="btn btn-outline-danger">
                                     <i class="fa fa-picture-o"></i>  Ảnh Banner 1
                                     </a>
                                     </span>
@@ -28,8 +29,19 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-3">
+                                    <span>
+                                    Link
+                                    </span>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="thumbnail" class="form-control" type="text" name="banner_3">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
                                     <span class="input-group-btn">
-                                    <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-outline-danger">
+                                    <a id="lfm-2" data-input="thumbnail" data-preview="holder"
+                                       class="btn btn-outline-danger">
                                     <i class="fa fa-picture-o"></i>  Ảnh Banner 2
                                     </a>
                                     </span>
@@ -40,11 +52,34 @@
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-3">
+                                    <span>
+                                    Link
+                                    </span>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="thumbnail" class="form-control" type="text" name="banner_3">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
                                     <span class="input-group-btn">
-                                    <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-outline-danger">
+                                    <a id="lfm-3" data-input="thumbnail" data-preview="holder"
+                                       class="btn btn-outline-danger">
                                     <i class="fa fa-picture-o"></i>  Ảnh Banner 3
                                     </a>
                                     </span>
+                                </div>
+                                <div class="col-md-9">
+                                    <input id="thumbnail" class="form-control" type="text" name="banner_3">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">
+                                    <div class="col-md-3">
+                                    <span>
+                                    Link
+                                    </span>
+                                    </div>
                                 </div>
                                 <div class="col-md-9">
                                     <input id="thumbnail" class="form-control" type="text" name="banner_3">
@@ -88,12 +123,15 @@
                 </div>
             </div>
         </div>
+
     </div>
 @endsection
 @push('bot')
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#lfm').filemanager('image');
+            $('#lfm-1').filemanager('image');
+            $('#lfm-2').filemanager('image');
+            $('#lfm-3').filemanager('image');
         })
     </script>
 @endpush

@@ -8,9 +8,10 @@ class Value extends Model
 {
     //
     protected $table = 'values';
+    protected  $guarded = [];
 
-    public  function  attribute()
+    public  function  attributes()
     {
-        return $this->belongsTo('App\Attribute');
+        return $this->belongsToMany('App\Attribute','attribute_value','value_id','attribute_id');
     }
 }

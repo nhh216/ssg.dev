@@ -17,17 +17,12 @@
             <div class="breadcrumb-wrapper">
                 <ul class="ssg-breadcrumb">
                     <li itemscope itemtype="https://data-vocabulary.org/Breadcrumb">
-                        <a itemprop="url" href="https://www.sosanhgia.com">
+                        <a itemprop="url" href="/">
                             <span itemprop="title">Trang chủ</span>
                         </a>
                     </li>
                     <li itemscope itemtype="https://data-vocabulary.org/Breadcrumb">
-                        <a itemprop="url" href="https://www.sosanhgia.com/t1002-thiet-bi-di-dong.html">
-                            <span itemprop="title">Thiết bị di động</span>
-                        </a>
-                    </li>
-                    <li itemscope itemtype="https://data-vocabulary.org/Breadcrumb">
-                        <a itemprop="url" href="https://www.sosanhgia.com/t6-dien-thoai-di-dong.html">
+                        <a itemprop="url" href="/dien-thoai/">
                             <span itemprop="title">Điện thoại di động</span>
                         </a>
                     </li>

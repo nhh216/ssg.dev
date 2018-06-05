@@ -5,12 +5,12 @@
     @stack('top')
 </head>
 <body id="category">
-<div class="container">
+<div class="container" id="app-5">
     @yield('content')
 
     @include('frontend::includes.script_bot')
+
     @stack('bot')
 </div>
 </body>
 </html>
-

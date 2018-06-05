@@ -15,7 +15,7 @@
                         <div class="product-info">
                             <div class="product-name">{{$product->name}}</div>
                             <div class="product-price">
-                                <span class="p-price-number">{{$min}}</span>
+                                <span class="p-price-number">{{$min->price}}</span>
                             </div>
                         </div>
                     </a>

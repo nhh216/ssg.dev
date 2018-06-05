@@ -2,6 +2,7 @@
 
 namespace Modules\Backend\Http\Controllers;
 
+use App\Category;
 use App\Manufacture;
 use App\Product;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class BackendController extends Controller
      */
     public function index()
     {
-        return view('backend::index');
+        return view("backend::pages.dashboard_main");
     }
 
     /**
@@ -70,17 +71,29 @@ class BackendController extends Controller
      */
     public function destroy()
     {
+
     }
 
 
     public  function  showDashboard()
     {
-        return view("backend::pages.dashboard");
+        return view("backend::pages.dashboard_main");
     }
 
     public  function  siteConfig()
     {
         return view("backend::pages.config");
+    }
+
+    public function  getNewCategories()
+    {
+        $new_categories = Category::where('parent_id',26)->get();
+        return $new_categories;
+    }
+
+    public  function categoryManager()
+    {
+        return view('backend::pages.list_category');
     }
 
 }

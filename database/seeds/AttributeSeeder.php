@@ -15,31 +15,55 @@ class AttributeSeeder extends Seeder
         $dataAttributeList = [
             [
                 'id'=>'1',
-                'name'=>'Màn Hình'
+                'name'=>'Độ phân giải màn hình'
             ],
             [
                 'id'=>'2',
-                'name'=>'Camera'
+                'name'=>'Camera trước'
             ],
             [
                 'id'=>'3',
-                'name'=>'Pin'
+                'name'=>'Camera sau'
             ],
             [
                 'id'=>'4',
-                'name'=>'Ram'
+                'name'=>'Tốc độ CPU'
             ],
             [
                 'id'=>'5',
-                'name'=>'CPU'
+                'name'=>'Số nhân'
             ],
             [
                 'id'=>'6',
-                'name'=>'HĐH'
+                'name'=>'Chipset'
             ],
             [
                 'id'=>'7',
-                'name'=>'Sim:'
+                'name'=>'GPU'
+            ],
+            [
+                'id'=>'8',
+                'name'=>'ROM'
+            ],
+            [
+                'id'=>'9',
+                'name'=>'Hệ điều hành'
+            ],
+            [
+                'id'=>'10',
+                'name'=>'Dung lượng pin'
+            ],
+            [
+                'id'=>'11',
+                'name'=>'Khe cắm sim'
+            ],
+            [
+                'id'=>'12',
+                'name'=>'Chức năng khác'
+            ],
+            [
+                'id'=>'13',
+                'name'=>'RAM '
             ]
         ];
 
